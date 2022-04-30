@@ -12,6 +12,8 @@ import com.example.demo.domain.account.request.LogInRequestDto;
 import com.example.demo.domain.account.request.SignUpRequestDto;
 import com.example.demo.global.dto.response.BackpacResponseBody;
 import com.example.demo.global.dto.response.BackpacResponseData;
+import com.example.demo.global.dto.response.DataResponseBody;
+import com.example.demo.global.dto.response.ErrorData;
 import com.example.demo.global.dto.response.SimpleResponseBody;
 import com.example.demo.global.dto.response.SuccessData;
 
@@ -33,7 +35,12 @@ public class AccountController {
 	 */
 	@PostMapping("/signup")
 	public BackpacResponseBody signUp(@RequestBody @Valid SignUpRequestDto param) throws Exception {
-		service.signup(param);
+		
+		BackpacResponseData responseData = service.signup(param);
+		
+		if (responseData instanceof ErrorData) {
+			return DataResponseBody.getFailBody("회원가입", responseData);
+		}
 		return SimpleResponseBody.getSuccessBody("회원가입");
 	}
 

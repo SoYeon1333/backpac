@@ -1,5 +1,6 @@
 package com.example.demo.domain.account;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.account.request.LogInRequestDto;
@@ -12,9 +13,12 @@ import com.example.demo.global.dto.response.SuccessData;
 public class AccountService {
 
 	private AccountRepository repository;
+	private PasswordEncoder passwordEncoder;
 	
-	public AccountService(AccountRepository repository) {
+	public AccountService(AccountRepository repository
+	                    , PasswordEncoder passwordEncoder) {
 		this.repository = repository;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	/**
@@ -25,11 +29,22 @@ public class AccountService {
 	 */
 	public BackpacResponseData signup(SignUpRequestDto param) throws Exception {
 
-		AccountEntity account = new AccountEntity();
+	    String email = param.getEmail();
+	    String nickname = param.getNickname();
+		AccountEntity account = repository.findTop1ByEmailOrNickname(email, nickname);
 		
+		if (account.getEmail().equals(email)) {
+			return ErrorData.getErrorData("이미 등록된 이메일입니다.");
+		}
+        if (account.getNickname().equals(nickname)) {
+            return ErrorData.getErrorData("이미 등록된 닉네임입니다.");
+        }
+		
+		// 회원가입을 위한 AccountEntity
+		account = new AccountEntity();
 		account.setName(param.getName());
 		account.setNickname(param.getNickname());
-		account.setPassword(param.getPassword());
+		account.setPassword(passwordEncoder.encode(param.getPassword()));
 		account.setPhone(param.getPhone());
 		account.setEmail(param.getEmail());
 		account.setSex(param.getSex());
