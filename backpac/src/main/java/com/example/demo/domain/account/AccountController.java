@@ -1,5 +1,7 @@
 package com.example.demo.domain.account;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +32,7 @@ public class AccountController {
 	 * @throws Exception
 	 */
 	@PostMapping("/signup")
-	public BackpacResponseBody signUp(@RequestBody SignUpRequestDto param) throws Exception {
+	public BackpacResponseBody signUp(@RequestBody @Valid SignUpRequestDto param) throws Exception {
 		service.signup(param);
 		return SimpleResponseBody.getSuccessBody("회원가입");
 	}
@@ -41,7 +43,7 @@ public class AccountController {
 	 * @throws Exception 
 	 */
 	@PostMapping("/login")
-	public BackpacResponseBody signIn(@RequestBody LogInRequestDto param) throws Exception {
+	public BackpacResponseBody signIn(@RequestBody @Valid LogInRequestDto param) throws Exception {
 		BackpacResponseData responseData = service.login(param);
 		
 		if (responseData instanceof SuccessData) {

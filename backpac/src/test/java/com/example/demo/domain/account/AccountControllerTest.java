@@ -69,7 +69,7 @@ public class AccountControllerTest {
                  .andDo(print());
 	}
 	
-//	@Test
+	@Test
 	@Order(2)
 	@DisplayName("회원가입 실패(파라미터 누락)")
 	public void signupFailByMissingParam() throws Exception {
@@ -92,7 +92,7 @@ public class AccountControllerTest {
 			  								 put("phone", "1012345678"); 
 			  								 put("message", messageSource.getMessage("Pattern.signUpRequestDto.name", null, null));}}
 			// 이름 최대 길이 초과
-			, new HashMap<String, Object>(){{put("name", "qwertywerttywertywer"); 
+			, new HashMap<String, Object>(){{put("name", "qwertywerttywertywerqqwe"); 
 			  								 put("password", "12345678901Aa!"); 
 			  								 put("email", "testRegNo@email.com"); 
 			  								 put("nickname", "testnickname"); 
@@ -137,7 +137,7 @@ public class AccountControllerTest {
 			  								 put("message", messageSource.getMessage("Pattern.signUpRequestDto.password", null, null));}}
 			// 비밀번호 길이 확인(10 - 50)
 			, new HashMap<String, Object>(){{put("name", "testName"); 
-			  								 put("password", "1aA345*"); 
+			  								 put("password", "a1aA345*"); 
 			  								 put("email", "testRegNo@email.com"); 
 			  								 put("nickname", "testnickname"); 
 			  								 put("phone", "1012345678"); 
@@ -150,7 +150,6 @@ public class AccountControllerTest {
 			  								 put("nickname", "testnickname"); 
 			  								 put("phone", ""); 
 			  								 put("message", messageSource.getMessage("NotBlank.signUpRequestDto.phone", null, null));}}
-			
 			// 전화번호 길이 확인
 			, new HashMap<String, Object>(){{put("name", "testName"); 
 			  								 put("password", "12345678901Aa!"); 
@@ -172,7 +171,7 @@ public class AccountControllerTest {
 			  								 put("email", "testReg"); 
 			  								 put("nickname", "testnickname"); 
 			  								 put("phone", "1012345678"); 
-			  								 put("message", messageSource.getMessage("Pattern.signUpRequestDto.email", null, null));}}
+			  								 put("message", messageSource.getMessage("Email.signUpRequestDto.email", null, null));}}
 			// 이메일 길이 확인
 			, new HashMap<String, Object>(){{put("name", "testName"); 
 			  								 put("password", "12345678901Aa!*"); 
@@ -196,7 +195,7 @@ public class AccountControllerTest {
 	        String json = new ObjectMapper().writeValueAsString(user);
 
 	        //when
-	        ResultActions resultActions = mockMvc.perform(post("/account/login")
+	        ResultActions resultActions = mockMvc.perform(post("/account/signup")
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .content(json))
 	                .andDo(print());

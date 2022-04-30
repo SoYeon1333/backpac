@@ -16,7 +16,7 @@ public class AccountEntity {
 	private String name;
 	private String nickname;
 	private String password;
-	private int phone;
+	private String phone;
 	private String email;
 	private String sex;
 	private String type;
