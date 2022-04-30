@@ -48,7 +48,7 @@ public class AccountService {
 	 */
 	public BackpacResponseData login(LogInRequestDto param) throws Exception {
 
-		AccountEntity account = repository.findByNickname(param.getNickname());
+		AccountEntity account = repository.findByEmail(param.getEmail());
 
 		if (account.getPassword().equals(param.getPassword())) {
 			return SuccessData.getSuccessData("로그인 성공");
