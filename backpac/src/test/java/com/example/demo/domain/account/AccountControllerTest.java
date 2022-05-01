@@ -1,7 +1,8 @@
 package com.example.demo.domain.account;
 
 import static org.hamcrest.Matchers.is;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.example.demo.domain.account.request.LogInRequestDto;
 import com.example.demo.domain.account.request.SignUpRequestDto;
+import com.example.demo.global.dto.response.SuccessData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = AccountController.class)
@@ -205,8 +208,76 @@ public class AccountControllerTest {
 	                 .andExpect(status().isOk())
 	                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 	                 .andExpect(MockMvcResultMatchers.jsonPath("$.status", is("fail")))
-	                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", is((String)signupParam.get("message"))))
 	                 .andDo(print());
 		}
 	}
+
+    @Test
+    @Order(3)
+    @DisplayName("로그인 성공")
+    public void loginSuccess() throws Exception {      
+
+        // given    
+        LogInRequestDto user = new LogInRequestDto();
+        user.setEmail("testRegNo@email.com");
+        user.setPassword("testPAss");
+
+        String json = new ObjectMapper().writeValueAsString(user);
+
+        //when
+        
+        // 회원가입 대상
+        when(service.login(any())).thenReturn(SuccessData.getSuccessData(null));
+        
+        ResultActions resultActions = mockMvc.perform(post("/account/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andDo(print());
+
+        //then
+        resultActions
+                 .andExpect(status().isOk())
+                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                 .andExpect(MockMvcResultMatchers.jsonPath("$.status", is("success")))
+                 .andDo(print());
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("로그인 실패(파라미터 누락)")
+    public void loginFail() throws Exception {      
+
+        @SuppressWarnings("serial")
+        List<Map<String, Object>> loginParams = List.of(
+            // 이메일 누락
+              new HashMap<String, Object>(){{put("email", ""); 
+                                             put("password", "12345678901Aa!");}}
+            // 비밀번호 누락
+            , new HashMap<String, Object>(){{put("email", "testRegNo@email.com"); 
+                                             put("password", "");}}
+        );
+        
+        for (Map<String, Object> loginParam : loginParams) {
+
+            // given
+            LogInRequestDto user = new LogInRequestDto();
+            user.setEmail((String)loginParam.get("email"));
+            user.setPassword((String)loginParam.get("password"));
+            
+            String json = new ObjectMapper().writeValueAsString(user);
+
+            //when
+            ResultActions resultActions = mockMvc.perform(post("/account/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json))
+                    .andDo(print());
+
+            //then
+            resultActions
+                     .andExpect(status().isOk())
+                     .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                     .andExpect(MockMvcResultMatchers.jsonPath("$.status", is("fail")))
+                     .andDo(print());
+        }
+    }
 }
