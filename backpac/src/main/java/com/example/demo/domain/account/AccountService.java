@@ -33,12 +33,14 @@ public class AccountService {
 	    String nickname = param.getNickname();
 		AccountEntity account = repository.findTop1ByEmailOrNickname(email, nickname);
 		
-		if (account.getEmail().equals(email)) {
-			return ErrorData.getErrorData("이미 등록된 이메일입니다.");
+		if (account != null) {
+	        if (account.getEmail().equals(email)) {
+	            return ErrorData.getErrorData("이미 등록된 이메일입니다.");
+	        }
+	        if (account.getNickname().equals(nickname)) {
+	            return ErrorData.getErrorData("이미 등록된 닉네임입니다.");
+	        }
 		}
-        if (account.getNickname().equals(nickname)) {
-            return ErrorData.getErrorData("이미 등록된 닉네임입니다.");
-        }
 		
 		// 회원가입을 위한 AccountEntity
 		account = new AccountEntity();
@@ -65,12 +67,14 @@ public class AccountService {
 
 		AccountEntity account = repository.findByEmail(param.getEmail());
 
-		if (account.getPassword().equals(param.getPassword())) {
-			return SuccessData.getSuccessData("로그인 성공");
-		}
-		else {
-			return ErrorData.getErrorData("로그인 실패");
-		}
+        if (account == null) {
+            return new ErrorData("존재하지 않는 아이디입니다.");
+        }
+        else if (!passwordEncoder.matches(param.getPassword(), account.getPassword())) {
+            return ErrorData.getErrorData("비밀번호를 확인해 주세요.");
+        }
+        
+	    return SuccessData.getSuccessData("로그인 성공");
 	}
 	
 }

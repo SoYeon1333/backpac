@@ -15,7 +15,6 @@ import com.example.demo.global.dto.response.BackpacResponseData;
 import com.example.demo.global.dto.response.DataResponseBody;
 import com.example.demo.global.dto.response.ErrorData;
 import com.example.demo.global.dto.response.SimpleResponseBody;
-import com.example.demo.global.dto.response.SuccessData;
 
 @RestController
 @RequestMapping("/account")
@@ -51,14 +50,13 @@ public class AccountController {
 	 */
 	@PostMapping("/login")
 	public BackpacResponseBody signIn(@RequestBody @Valid LogInRequestDto param) throws Exception {
+	    
 		BackpacResponseData responseData = service.login(param);
 		
-		if (responseData instanceof SuccessData) {
-			return SimpleResponseBody.getSuccessBody("로그인");
+		if (responseData instanceof ErrorData) {
+            return DataResponseBody.getFailBody("로그인", responseData);
 		}
-		else {
-			return SimpleResponseBody.getFailBody("로그인");
-		}
+        return SimpleResponseBody.getSuccessBody("로그인");
 	}
 
 	/**
