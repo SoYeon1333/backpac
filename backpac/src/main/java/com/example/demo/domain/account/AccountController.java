@@ -1,12 +1,18 @@
 package com.example.demo.domain.account;
 
+import java.net.http.HttpRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.example.demo.domain.account.request.LogInRequestDto;
 import com.example.demo.domain.account.request.SignUpRequestDto;
@@ -49,13 +55,17 @@ public class AccountController {
 	 * @throws Exception 
 	 */
 	@PostMapping("/login")
-	public BackpacResponseBody signIn(@RequestBody @Valid LogInRequestDto param) throws Exception {
+	public BackpacResponseBody signIn(HttpServletRequest request, @RequestBody @Valid LogInRequestDto param) throws Exception {
 	    
 		BackpacResponseData responseData = service.login(param);
 		
 		if (responseData instanceof ErrorData) {
             return DataResponseBody.getFailBody("로그인", responseData);
 		}
+		
+	    // 로그인 세션 처리
+	    request.getSession().setAttribute("login_email", param.getEmail());
+	    
         return SimpleResponseBody.getSuccessBody("로그인");
 	}
 
@@ -64,8 +74,14 @@ public class AccountController {
 	 * @return
 	 */
 	@GetMapping("/logout")
-	public BackpacResponseBody logOut() {
-		return null;
+	public BackpacResponseBody logOut(HttpServletRequest request) {
+	    
+	    // 세션 아웃 처리
+	    HttpSession session = request.getSession(false);
+	    if (session != null) {
+	        session.invalidate();
+	    }
+	    return SimpleResponseBody.getSuccessBody("로그아웃");
 	}
 
 	/**
