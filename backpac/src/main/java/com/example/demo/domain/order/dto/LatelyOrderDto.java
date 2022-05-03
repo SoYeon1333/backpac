@@ -1,7 +1,5 @@
 package com.example.demo.domain.order.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +11,7 @@ public class LatelyOrderDto {
     private long accountId;
     private String orderNo;
     private String productName;
-    private LocalDateTime paymentAt;
+    private String paymentAt;
     private String nickname;
     private String email;
     

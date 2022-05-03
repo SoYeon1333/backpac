@@ -39,7 +39,7 @@ public class OrderService {
             OrderDto order = new OrderDto();
             order.setOrderNo(s.getOrderNo());
             order.setProductName(s.getProductName());;
-            order.setPaymentAt(s.getPaymentAt());
+            order.setPaymentAt(s.getPaymentAt().toString());
             orders.add(order);
         });
         
@@ -100,7 +100,7 @@ public class OrderService {
                                                                  .accountId((long)s[1])
                                                                  .orderNo((String)s[2])
                                                                  .productName((String)s[3])
-                                                                 .paymentAt((LocalDateTime)s[4])
+                                                                 .paymentAt(((LocalDateTime)s[4]).toString())
                                                                  .nickname((String)s[5])
                                                                  .email((String)s[6])
                                                        .build();

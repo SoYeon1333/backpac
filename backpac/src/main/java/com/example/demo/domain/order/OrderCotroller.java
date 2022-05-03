@@ -3,6 +3,7 @@ package com.example.demo.domain.order;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,12 @@ import com.example.demo.global.dto.response.DataResponseBody;
 import com.example.demo.global.dto.response.ErrorData;
 import com.example.demo.global.dto.response.SimpleResponseBody;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 public class OrderCotroller {
 
     private OrderService service;
@@ -33,6 +38,10 @@ public class OrderCotroller {
      * @param accountId
      * @return
      */
+    @ApiOperation(value="단일 회원 주문 목록", notes="단일 회원 주문 목록 조회 API 입니다.")
+    @ApiImplicitParams({
+         @ApiImplicitParam(name = "accountId", value="계정ID", required=true, dataType = "int", paramType="path")
+    })
     @GetMapping("/{accountId}")
     public BackpacResponseBody userOrder(HttpServletRequest request, @PathVariable long accountId) {
         
@@ -50,6 +59,10 @@ public class OrderCotroller {
      * @param param
      * @return
      */
+    @ApiOperation(value="주문 하기", notes="주문 API 입니다.")
+    @ApiImplicitParams({
+         @ApiImplicitParam(name = "accountId", value="계정ID", required=true, dataType = "int", paramType="path")
+    })
     @PostMapping("/{accountId}")
     public BackpacResponseBody newOrder(HttpServletRequest request
                                       , @PathVariable long accountId
@@ -75,6 +88,13 @@ public class OrderCotroller {
      * @param request
      * @return
      */
+    @ApiOperation(value="주문 하기", notes="주문 API 입니다.")
+    @ApiImplicitParams({
+           @ApiImplicitParam(name = "email", value="계정 이메일", required=true, dataType = "String", paramType="query")
+         , @ApiImplicitParam(name = "nickname", value="계정 닉네임", required=true, dataType = "String", paramType="query")
+         , @ApiImplicitParam(name = "pageCount", value="페이지당 게시글 수", required=false, defaultValue = "20", dataType = "String", paramType="query")
+         , @ApiImplicitParam(name = "page", value="페이지 번호", required=false, defaultValue = "1", dataType = "String", paramType="query")
+    })
     @GetMapping("/users")
     public BackpacResponseBody latelyOrders(HttpServletRequest request) {
         

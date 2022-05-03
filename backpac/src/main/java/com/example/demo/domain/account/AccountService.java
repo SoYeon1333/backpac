@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.account.request.LogInRequestDto;
 import com.example.demo.domain.account.request.SignUpRequestDto;
+import com.example.demo.domain.account.response.LoginResponseDto;
 import com.example.demo.domain.account.response.MeResponseDto;
 import com.example.demo.global.dto.response.BackpacResponseData;
 import com.example.demo.global.dto.response.ErrorData;
@@ -75,7 +76,9 @@ public class AccountService {
             return ErrorData.getErrorData("비밀번호를 확인해 주세요.");
         }
         
-	    return SuccessData.getSuccessData("로그인 성공");
+        LoginResponseDto response = new LoginResponseDto();
+        response.setAccountId(account.getId());
+	    return response;
 	}
 	
 	public BackpacResponseData me(String email) throws Exception {
