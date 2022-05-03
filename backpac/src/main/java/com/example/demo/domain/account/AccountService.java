@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.account.request.LogInRequestDto;
 import com.example.demo.domain.account.request.SignUpRequestDto;
+import com.example.demo.domain.account.response.MeResponseDto;
 import com.example.demo.global.dto.response.BackpacResponseData;
 import com.example.demo.global.dto.response.ErrorData;
 import com.example.demo.global.dto.response.SuccessData;
@@ -75,6 +76,21 @@ public class AccountService {
         }
         
 	    return SuccessData.getSuccessData("로그인 성공");
+	}
+	
+	public BackpacResponseData me(String email) throws Exception {
+	    
+	    AccountEntity account = repository.findByEmail(email);
+	    
+	    MeResponseDto me = new MeResponseDto();
+	    me.setEmail(account.getEmail());
+	    me.setName(account.getName());
+	    me.setNickname(account.getNickname());
+	    me.setPhone(account.getPhone());
+	    me.setSex(account.getSex());
+	    me.setType(account.getType());
+	    
+	    return me;
 	}
 	
 }
